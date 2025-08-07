@@ -2,11 +2,11 @@
   <img src="Aegis.jpg" alt="Aegis Security Gateway Logo" width="250"/>
 </p>
 
-# 🛡️ Aegis: API Security Gateway
+# 🛡️ Aegis: Universal API Security Gateway
 
 ![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg) ![FastAPI Version](https://img.shields.io/badge/fastapi-0.100+-green.svg) ![License](https://img.shields.io/badge/license-MIT-lightgrey.svg) ![Status](https://img.shields.io/badge/status-Educational-orange)
 
-**An integrable, zero-trust security gateway and Mobile BFF, designed to be a powerful, configurable shield for your backend services.**
+**An integrable, zero-trust security gateway with Mobile BFF capabilities, designed to be a powerful, configurable shield for your backend services.**
 
 ---
 
@@ -26,22 +26,25 @@ In modern application development, security is complex and often decentralized. 
 
 This frees your developers to focus on what they do best: building great products.
 
-## 🏆 Key Features
+## 📱 Perfect for Mobile & Web Applications
 
-Aegis provides a suite of universal security features, plus specialized capabilities for performance-critical clients.
+Aegis is the ideal backend solution for any client-side application, including **React Native, Flutter, native iOS/Android, and Single-Page Web Apps (React, Vue, etc.)**.
 
-### Core Gateway Features (For ALL Clients)
+Because it uses standard HTTP and JSON, it is completely client-agnostic. More importantly, it directly solves the biggest challenges faced by frontend developers:
 
-*   **🔌 Zero Backend Modification:** Instantly add a robust security layer to any existing API (including legacy systems) without a single line of code change in the target service.
+1.  **Performance:** Mobile networks can be slow. Aegis's **Mobile BFF (Backend-for-Frontend)** capability solves this by aggregating data from multiple microservices into a single, optimized response. This reduces the number of network calls your app has to make, leading to a faster, smoother user experience.
+
+2.  **Simplicity:** Your frontend app only needs to know about one secure, stable entry point: the Aegis gateway. You can refactor, move, or add internal microservices without ever needing to update and redeploy your mobile or web app.
+
+3.  **Security:** Aegis offloads complex security logic to the server. Your frontend code remains simple and clean—it just needs to send an API key and a user token. The gateway handles the heavy lifting of WAF, PII redaction, and advanced authorization checks.
+
+## 🏆 Key Advantages
+
+*   **🔌 Zero Backend Modification:** Instantly add a robust security layer to any existing API without a single line of code change in the target service.
 *   **🛡️ Centralized Defense-in-Depth:** Enforces WAF, threat intelligence, bot detection, and authorization checks in one consistent, manageable place for all API traffic.
-*   **🔒 Proactive Data Protection:** The PII (Personally Identifiable Information) redaction engine prevents accidental data leaks by automatically sanitizing responses sent to any client.
-*   **🚫 Advanced Authorization:** Implements sophisticated, context-aware checks like IDOR protection to prevent users from accessing data that doesn't belong to them.
-*   **🕵️ Shadow API Detection:** Dynamically loads an OpenAPI spec to detect and log or block requests to undocumented endpoints.
+*   **🔒 Proactive Data Protection:** The PII redaction engine prevents accidental data leaks by automatically sanitizing responses.
+*   **🚫 Advanced Authorization:** Implements sophisticated checks like IDOR protection to prevent users from accessing data that doesn't belong to them.
 *   **🔬 High Configurability:** All security policies are defined in a simple `config.yaml` file, making it easy to customize the gateway's behavior.
-
-### Optional Capabilities
-
-*   **🚀 Mobile BFF (Backend-for-Frontend):** For clients like mobile or single-page web apps, Aegis can act as a BFF, aggregating data from multiple microservices into a single, optimized payload to accelerate frontend performance.
 *   **🏗️ Modular & Integrable:** Built as a reusable `aegis_toolkit`, its security features can be "plugged into" any existing FastAPI application.
 
 ---
@@ -76,8 +79,11 @@ python -m venv venv
 # On Windows: .\venv\Scripts\Activate
 # On macOS/Linux: source venv/bin/activate
 
-# Install the required dependencies from the provided file
+# Install the required Python packages
 pip install -r requirements.txt
+
+# IMPORTANT: Download the language model for PII detection
+python -m spacy download en_core_web_lg
 ```
 
 ### 2. Configuration
@@ -87,7 +93,7 @@ The application is configured using two files inside the `AegisApp/` directory. 
 1.  **`.env` File (Secrets):**
     *   `JWT_SECRET_KEY`: Generate a strong, random secret for signing tokens.
     *   `API_CLIENTS_JSON`: Define the client applications allowed to access the gateway.
-    *   `REDIS_URL`: (Optional) Provide a connection string to enable Redis-backed caching and profiling. Leave blank to use the default in-memory cache.
+    *   `REDIS_URL`: (Optional) Provide a connection string to enable Redis. Leave blank to use the in-memory cache.
 
 2.  **`config.yaml` File (Rules & Policies):**
     *   `backend_target_url`: The URL of the backend service you want to protect (e.g., `http://localhost:8001`).
@@ -161,15 +167,13 @@ Now, any request to an endpoint *not* in that spec will trigger a `SHADOW_API_DI
 
 Aegis is an excellent foundation, providing a massive **head start** for any company looking to build a custom security gateway. To make it fully production-ready for high-traffic, mission-critical use, a professional team would typically add the following infrastructure and robustness layers:
 
-*   **Scalable State Management:** The `anomaly_detector` and `cartographer` currently use in-memory state, which works for a single process. In production, this state would be moved to the supported **Redis backend** to ensure consistency across multiple gateway instances.
+*   **Scalable State Management:** The `anomaly_detector` and `cartographer` currently use in-memory state. In production, this state would be moved to the supported **Redis backend** to ensure consistency across multiple gateway instances.
 
-*   **Enhanced Observability:** Production systems require deep insight. The existing `print()` statements would be replaced with **structured logging** (e.g., JSON logs), and a metrics layer (using a tool like Prometheus) would be added to monitor latency, error rates, and attack volumes on a real-time dashboard.
+*   **Enhanced Observability:** Production systems require deep insight. The existing `print()` statements would be replaced with **structured logging** (e.g., JSON logs), and a metrics layer (e.g., Prometheus) would be added to monitor latency, error rates, and attack volumes on a real-time dashboard.
 
-*   **Comprehensive Test Suite:** A full suite of **unit, integration, and end-to-end tests** (using `pytest`) would be created to ensure every security module functions correctly and to prevent regressions when adding new features.
+*   **Comprehensive Test Suite:** A full suite of **unit, integration, and end-to-end tests** (using `pytest`) would be created to ensure every security module functions correctly and to prevent regressions.
 
 *   **Security Hardening:** The gateway would undergo a formal security review, including **dependency scanning**, **static code analysis**, and the implementation of more advanced, configurable **rate-limiting** policies.
-
-In essence, Aegis provides the sophisticated architectural foundation, and a production deployment involves building the robust operational infrastructure around it.
 
 ---
 
