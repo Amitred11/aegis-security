@@ -241,8 +241,6 @@ git commit -m "feat: Add my new feature"
 git push origin feature/my-enhancement
 ```
 
----
-
 Open a pull request and let's collaborate 🔧
 
 ---
