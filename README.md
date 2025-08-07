@@ -254,10 +254,4 @@ Proudly built for learning, sharing, and defending the backend.
 
 ---
 
-If you meant **"ongoing" as in a live progress tracker**, you could rename the **Roadmap** section to:
-
-```md
-## 🚧 Ongoing Development
-````
-
 Feel free to explore, experiment, and adapt this project to your needs. Happy coding
