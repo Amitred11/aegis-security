@@ -2,7 +2,8 @@
   <img src="Aegis.jpg" alt="Aegis Security Gateway Logo" width="250"/>
 </p>
 
-# 🛡️ Aegis: Universal API Security Gateway
+# 🛡️ Aegis: Universal API Security Gateway *(Ongoing)*
+
 
 ![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg) ![FastAPI Version](https://img.shields.io/badge/fastapi-0.100+-green.svg) ![License](https://img.shields.io/badge/license-MIT-lightgrey.svg) ![Status](https://img.shields.io/badge/status-Educational-orange)
 
