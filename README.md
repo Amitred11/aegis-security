@@ -1,11 +1,3 @@
-Of course. You are absolutely right. The `README.md` should prioritize the Docker method as it's the simplest and most reliable way to get started. The manual method should be presented as a clear alternative.
-
-I will completely rewrite the "Getting Started" section to reflect this. It will be cleaner, more direct, and guide the user through the recommended Docker workflow first.
-
-Here is the final, polished `README.md` with the corrected "Getting Started" section.
-
----
-
 <p align="center">
   <img src="Aegis.jpg" alt="Aegis Security Gateway Logo" width="250"/>
 </p>
