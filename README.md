@@ -178,4 +178,86 @@ Aegis is an excellent foundation, providing a massive **head start** for any com
 
 ---
 
+## 🗺️ Roadmap
+
+- [x] IDOR Protection Layer  
+- [x] PII Detection and Redaction using spaCy  
+- [x] Observability and logging tools  
+- [x] Mobile BFF-style request aggregation  
+- [ ] Basic WAF rule engine (SQLi/XSS detection)  
+- [ ] Admin dashboard (CLI or web-based)  
+- [ ] Token expiration + refresh handling  
+- [ ] Docker support and deployment templates  
+- [ ] Formal unit and integration tests  
+- [ ] External security audit (long-term)
+
+---
+
+## 🧪 Test Coverage (Planned)
+
+Test cases will be added under `tests/` directory for:
+
+- `gateway.py`: Request routing, security filtering
+- `authorization.py`: Ownership and role-based access
+- `pii_redactor.py`: NLP detection accuracy and masking
+- `waf.py`: Signature detection (XSS, SQLi)
+- `observability.py`: Logging accuracy, redaction logs
+
+---
+
+## 🧱 Tech Stack
+
+- **Python 3.11**
+- **FastAPI** – Gateway framework
+- **spaCy** – PII detection via NLP
+- **PyYAML** – Custom YAML config parsing
+- **dotenv** – Environment variable support
+- **Uvicorn** – ASGI server
+
+---
+
+## 🔐 Security Philosophy
+
+> “Don’t trust. Verify. Then log everything.”
+
+Aegis is built around a **zero-trust mindset**:
+- Every request is suspicious by default.
+- No resource is assumed to be safe or owned unless proven.
+- All actions are logged for later auditing and pattern detection.
+
+---
+
+## 📣 Contributing
+
+This is a student-led open project. Contributions are welcome!
+
+```bash
+git checkout -b feature/my-enhancement
+git commit -m "Add my feature"
+git push origin feature/my-enhancement
+````
+
+Open a pull request and let's collaborate 🔧
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** — feel free to fork and remix it for educational or internal use.
+
+---
+
+## 🧠 Author
+
+Made with 🔐 by **[Amitred11](https://github.com/Amitred11)**
+Proudly built for learning, sharing, and defending the backend.
+
+---
+
+If you meant **"ongoing" as in a live progress tracker**, you could rename the **Roadmap** section to:
+
+```md
+## 🚧 Ongoing Development
+````
+
 Feel free to explore, experiment, and adapt this project to your needs. Happy coding
