@@ -1,0 +1,49 @@
+# ==============================================================================
+# ==                      AEGIS API GATEWAY - REQUIREMENTS                    ==
+# ==============================================================================
+#
+# To install all dependencies, run:
+# pip install -r requirements.txt
+#
+# After installation, you must also download the required Spacy model for the
+# PII redaction engine to work. Run this command:
+# python -m spacy download en_core_web_lg
+#
+
+# --- Core Web Framework ---
+# For the main application server and ASGI support
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+
+# --- Data Handling & Configuration ---
+# For data validation, settings management, and YAML parsing
+pydantic==2.7.1
+pydantic-settings==2.2.1
+PyYAML==6.0.1
+
+# --- Security & Authentication ---
+# For JWT creation and validation, password hashing (optional but good practice)
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+# For rate limiting capabilities (optional but recommended)
+slowapi==0.1.9
+
+# --- Networking ---
+# Asynchronous HTTP client for proxying requests to backends
+httpx==0.27.0
+
+# --- Caching ---
+# For connecting to Redis for caching and profiling
+redis==5.0.4
+
+# --- PII Scanning Engine (Presidio) ---
+# For finding and redacting sensitive data in responses
+presidio-analyzer==2.2.353
+presidio-anonymizer==2.2.353
+# Spacy is a core dependency of Presidio for Natural Language Processing
+spacy==3.7.4
+
+# --- AI/ML Engine (Optional) ---
+# For the 'Oracle' module's predictive risk scoring
+# numpy==1.26.4
+# onnxruntime==1.17.3
