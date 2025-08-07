@@ -1,13 +1,19 @@
 import httpx
+import logging
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
 from jose import jwt
 from datetime import datetime, timedelta, timezone
+
 from main import settings
-from aegis_toolkit.security import get_api_client_factory
+
+from aegis_toolkit.security import get_api_client_factory, get_current_user_factory, ApiClient
+
+get_api_client = get_api_client_factory(settings)
+get_current_user = get_current_user_factory(settings)
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
-get_api_client = get_api_client_factory(settings)
+audit_logger = logging.getLogger("audit")
 
 class LoginRequest(BaseModel):
     email: str
@@ -21,16 +27,15 @@ def create_access_token(data: dict):
     encoded_jwt = jwt.encode(to_encode, settings.jwt_secret_key, algorithm="HS256")
     return encoded_jwt
 
-# This should point to your real internal authentication microservice
 auth_backend_client = httpx.AsyncClient(base_url="http://localhost:8006/auth-service")
 
 @router.post("/login")
-async def login(form_data: LoginRequest, client_app: dict = Depends(get_api_client)):
+async def login(form_data: LoginRequest, client_app: ApiClient = Depends(get_api_client)):
     """
     Handles user login by proxying to an internal authentication service.
     If successful, it issues a JWT from this middleware.
     """
-    print(f"App '{client_app.client_id}' attempting user login.")
+    audit_logger.info(f"App '{client_app.client_id}' attempting user login.")
 
     try:
         response = await auth_backend_client.post("/login", json=form_data.model_dump())
@@ -64,3 +69,22 @@ async def login(form_data: LoginRequest, client_app: dict = Depends(get_api_clie
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
             detail=f"An unexpected error occurred during login: {e}"
         )
+    
+@router.post("/refresh")
+async def refresh_token(
+    client_app: ApiClient = Depends(get_api_client),
+    current_user: dict = Depends(get_current_user)
+):
+    """
+    Accepts a valid access token and returns a new one with a fresh expiration time.
+    """
+    if not current_user.get("user_id"):
+        raise HTTPException(status_code=401, detail="Invalid or expired token provided.")
+
+    new_access_token = create_access_token(data={
+        "user_id": current_user["user_id"],
+        "role": current_user["role"],
+    })
+    
+    audit_logger.info(f"Token refreshed for user_id: {current_user['user_id']}")
+    return {"access_token": new_access_token, "token_type": "bearer"}

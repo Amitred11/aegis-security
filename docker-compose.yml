@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  gateway:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./AegisApp:/app/AegisApp
+      - ./aegis_toolkit:/app/aegis_toolkit
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - backend
+      - redis
+    command: uvicorn AegisApp.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app
+
+  backend:
+    image: python:3.11-slim
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./dummy_backend.py:/app/dummy_backend.py
+    working_dir: /app
+    command: >
+      sh -c "pip install fastapi uvicorn &&
+             uvicorn dummy_backend:app --host 0.0.0.0 --port 8001"
+
+  redis:
+    image: redis:6.2-alpine
+    ports:
+      - "6379:6379"

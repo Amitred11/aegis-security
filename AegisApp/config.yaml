@@ -1,6 +1,8 @@
 # The URL of the backend service the gateway protects.
 backend_target_url: "http://localhost:8001"
 
+rate_limit: "100/minute"
+
 # A list of hostnames the gateway is allowed to make outbound requests to.
 egress_allowlist:
   - "localhost"

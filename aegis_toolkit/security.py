@@ -1,6 +1,6 @@
 # aegis_toolkit/security.py
 
-from fastapi import HTTPException, status, Depends
+from fastapi import HTTPException, status, Depends, Request
 from fastapi.security import APIKeyHeader, OAuth2PasswordBearer
 from jose import jwt, JWTError
 from .config import Settings, ApiClient
@@ -10,13 +10,23 @@ def get_api_client_factory(settings: Settings):
     api_key_header_scheme = APIKeyHeader(name="x-api-key", auto_error=False)
     API_CLIENTS_BY_KEY = {client.api_key: client for client in settings.api_clients}
 
-    async def get_api_client(api_key: str = Depends(api_key_header_scheme)) -> ApiClient:
-        if api_key and api_key in API_CLIENTS_BY_KEY:
-            return API_CLIENTS_BY_KEY[api_key]
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or missing API Key"
-        )
+    async def get_api_client(request: Request, api_key: str = Depends(api_key_header_scheme)) -> ApiClient:
+        if not api_key or api_key not in API_CLIENTS_BY_KEY:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid or missing API Key"
+            )
+            
+        client = API_CLIENTS_BY_KEY[api_key]
+        
+        if client.allowed_ips:
+            if request.client.host not in client.allowed_ips:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="Forbidden: This IP address is not allowed to use this API key."
+                )
+        return client
+        
     return get_api_client
 
 def get_current_user_factory(settings: Settings):
