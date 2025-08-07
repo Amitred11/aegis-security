@@ -1,8 +1,6 @@
 # The URL of the backend service the gateway protects.
 backend_target_url: "http://localhost:8001"
-
 rate_limit: "100/minute"
-
 # A list of hostnames the gateway is allowed to make outbound requests to.
 egress_allowlist:
   - "localhost"
@@ -14,25 +12,21 @@ abuseipdb_confidence_minimum: 90
 
 # API Discovery
 api_discovery:
-  openapi_spec_url: ""
-  on_shadow_api_discovered: "log"
+  openapi_spec_url: "" # Example: "http://backend:8001/openapi.json"
+  on_shadow_api_discovered: "log" # can be "log" or "block"
 
 # Behavioral Analysis
 behavioral_analysis:
   enforce_header_consistency: true
   max_path_entropy: 4.0
 
-# WAF Rules
-sentry_rules:
-  - name: "block_sqli_xss_url"
-    description: "Blocks common malicious patterns in URL query parameters."
-    pattern: '(<script|union select|%3Cscript|eval\(|\s+or\s+\d+=\d+)'
-    inspect_locations: ["query_params"]
-    action: "block"
-  - name: "block_xss_in_body"
-    description: "Blocks script tags in JSON post bodies."
-    pattern: '(<script|%3Cscript)'
-    inspect_locations: ["body"]
+# WAF Rules (renamed from sentry_rules)
+waf_rules:
+  - name: "enforce_create_user_schema"
+    description: "Enforces a strict schema for the user creation endpoint."
+    path_pattern: "/api/v1/users"
+    methods: ["POST"]
+    body_schema: "CreateUserRequest" # Name from our SCHEMA_REGISTRY
     action: "block"
 
 # PII Data Loss Prevention
@@ -42,18 +36,21 @@ pii_scan_policy:
       - "PERSON"
       - "PHONE_NUMBER"
       - "US_SSN"
-      - "CREDIT_CARD_NUMBER"
+      - "CREDIT_CARD" # More accurate Presidio entity name
 
+# IDOR Protection Policies
 authorization_policies:
   - name: "mobile_app_standard_policy"
     match:
       role: "mobile_app_standard"
     rules: 
-      - path_pattern: "/api/v1/users/*"
-        enforce_owner: "user_id" 
+      - path_pattern: "/api/v1/users/{user_id}/profile"
+        enforce_owner: "user_id"      # This is the claim name in the JWT
+        owner_path_param: "user_id"   # This is the name of the path parameter
     
+# BFF API Aggregations
 aggregations:
-  - public_path: "/mobile/v1/products/{product_id}"
+  - public_path: "/bff/v1/products/{product_id}" # Using /bff prefix for clarity
     required_role: "mobile_guest"
     queries:
       - name: "product_info"

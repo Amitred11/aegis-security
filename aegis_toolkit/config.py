@@ -1,3 +1,4 @@
+# core/config.py
 import yaml
 import json
 from pydantic import BaseModel, Field
@@ -9,7 +10,8 @@ from .schemas import ApiClient, ErrorDetail, ErrorResponse
 class AccessRule(BaseModel):
     path_pattern: str
     methods: List[str] = ["*"]
-    enforce_owner: Optional[str] = None
+    enforce_owner: Optional[str] = None  # The claim in the JWT to check (e.g., "user_id")
+    owner_path_param: Optional[str] = None # The name of the path parameter (e.g., "user_id" in /users/{user_id})
 
 class SecureEnclaveConfig(BaseModel):
     provider: str
@@ -47,12 +49,15 @@ class AIModelConfig(BaseModel):
     path: str
     high_risk_threshold: float
 
-class SentryRule(BaseModel):
+class WAFRule(BaseModel):
     name: str
     description: Optional[str] = None
-    type: Optional[str] = None
+    path_pattern: str  # Add path pattern to apply rule to specific endpoints
+    methods: List[str] = ["*"] # Add methods to scope the rule
+    body_schema: Optional[str] = None # The name of the Pydantic schema to enforce
     pattern: Optional[str] = None
     max_depth: Optional[int] = None
+    max_cost: Optional[int] = None # Added for GraphQL cost analysis
     inspect_locations: List[str] = []
     action: str
     enforce_owner: Optional[str] = None
@@ -128,11 +133,11 @@ class Settings(BaseSettings):
         return AIModelConfig(**self._load_yaml().get('adaptive_security_model', {}))
 
     @property
-    def sentry_rules(self) -> List[SentryRule]:
-        """Loads and validates the 'sentry_rules' (WAF) section from config.yaml."""
+    def waf_rules(self) -> List[WAFRule]: # Renamed from sentry_rules
+        """Loads and validates the 'waf_rules' section from config.yaml."""
         config = self._load_yaml()
-        rules_data = config.get('sentry_rules', [])
-        return [SentryRule(**r) for r in rules_data]
+        rules_data = config.get('waf_rules', [])
+        return [WAFRule(**r) for r in rules_data]
 
     @property
     def pii_scan_policy(self) -> List[PIIScanPolicy]:

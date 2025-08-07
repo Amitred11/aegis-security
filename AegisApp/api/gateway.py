@@ -6,12 +6,12 @@ from fastapi.responses import StreamingResponse
 
 from aegis_toolkit.config import settings
 from aegis_toolkit.security import get_api_client, ApiClient
-from aegis_toolkit.sentry import inspect_request
+from Aegis.aegis_toolkit.waf import inspect_request
 from aegis_toolkit.threat_intel import check_ip_reputation
 from aegis_toolkit.profiler import profile_and_analyze
 from aegis_toolkit.transformer import purify_response_body
 from aegis_toolkit.authorization import apply_request_enhancements
-from api.mobile_endpoints import get_current_user
+from Aegis.AegisApp.api.bff_endpoints import get_current_user
 from aegis_toolkit.cartographer import check_for_shadow_api
 
 router = APIRouter()
