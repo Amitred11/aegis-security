@@ -26,16 +26,23 @@ In modern application development, security is complex and often decentralized. 
 
 This frees your developers to focus on what they do best: building great products.
 
-## 🏆 Key Advantages of Aegis
+## 🏆 Key Features
 
-Why choose a solution like Aegis?
+Aegis provides a suite of universal security features, plus specialized capabilities for performance-critical clients.
+
+### Core Gateway Features (For ALL Clients)
 
 *   **🔌 Zero Backend Modification:** Instantly add a robust security layer to any existing API (including legacy systems) without a single line of code change in the target service.
-*   **🛡️ Centralized Defense-in-Depth:** Instead of scattering security logic across multiple services, Aegis enforces WAF, threat intelligence, bot detection, and authorization checks in one consistent, manageable place.
-*   **🔒 Proactive Data Protection:** The PII (Personally Identifiable Information) redaction engine prevents accidental data leaks, helping you meet compliance standards like GDPR and CCPA by automatically sanitizing responses.
-*   **🚀 Accelerated Frontend Performance:** The Mobile BFF (Backend-for-Frontend) capability allows you to aggregate data from multiple microservices into a single, optimized payload, dramatically reducing network calls from your mobile or web app.
-*   **🔬 High Configurability:** All security policies—from WAF rules to PII redaction entities—are defined in a simple `config.yaml` file, making it easy for anyone to customize the gateway's behavior without being a security expert.
-*   **🏗️ Modular & Integrable:** Built as a reusable `aegis_toolkit`, its security features can be "plugged into" any existing FastAPI application, not just used as a standalone gateway.
+*   **🛡️ Centralized Defense-in-Depth:** Enforces WAF, threat intelligence, bot detection, and authorization checks in one consistent, manageable place for all API traffic.
+*   **🔒 Proactive Data Protection:** The PII (Personally Identifiable Information) redaction engine prevents accidental data leaks by automatically sanitizing responses sent to any client.
+*   **🚫 Advanced Authorization:** Implements sophisticated, context-aware checks like IDOR protection to prevent users from accessing data that doesn't belong to them.
+*   **🕵️ Shadow API Detection:** Dynamically loads an OpenAPI spec to detect and log or block requests to undocumented endpoints.
+*   **🔬 High Configurability:** All security policies are defined in a simple `config.yaml` file, making it easy to customize the gateway's behavior.
+
+### Optional Capabilities
+
+*   **🚀 Mobile BFF (Backend-for-Frontend):** For clients like mobile or single-page web apps, Aegis can act as a BFF, aggregating data from multiple microservices into a single, optimized payload to accelerate frontend performance.
+*   **🏗️ Modular & Integrable:** Built as a reusable `aegis_toolkit`, its security features can be "plugged into" any existing FastAPI application.
 
 ---
 
