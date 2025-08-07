@@ -27,6 +27,38 @@ In modern application development, security is complex and often decentralized. 
 
 This frees your developers to focus on what they do best: building great products.
 
+### 🛡️ Security Flow Diagram
+
+This diagram shows how a request flows through the various security layers of the Aegis gateway before reaching your backend.
+
+```mermaid
+graph TD
+    subgraph "Client (Mobile/Web)"
+        A[User Request]
+    end
+
+    subgraph "Aegis Gateway (Port 8000)"
+        A -- HTTPS --> B{1. API Key Auth};
+        B -- Valid Key --> C{2. IP Firewall};
+        C -- IP Allowed --> D{3. Rate Limiter};
+        D -- Limit OK --> E{4. WAF Signature Scan};
+        E -- Clean --> F{5. IDOR Protection};
+        F -- Ownership OK --> G[Proxy to Backend];
+    end
+
+    subgraph "Backend Service (Port 8001)"
+        H[Your Application Logic];
+    end
+
+    subgraph "Response Path"
+        I[PII Redaction Engine];
+    end
+
+    G -- Request --> H;
+    H -- Insecure Response --> I;
+    I -- Secure Response --> A;
+```
+
 ## 📱 Perfect for Mobile & Web Applications
 
 Aegis is the ideal backend solution for any client-side application, including **React Native, Flutter, native iOS/Android, and Single-Page Web Apps (React, Vue, etc.)**.
