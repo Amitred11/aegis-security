@@ -1,0 +1,72 @@
+# The URL of the backend service the gateway protects.
+backend_target_url: "http://localhost:8001"
+
+# A list of hostnames the gateway is allowed to make outbound requests to.
+egress_allowlist:
+  - "localhost"
+  - "api.abuseipdb.com"
+
+# Threat Intelligence configuration
+abuseipdb_api_key: ""
+abuseipdb_confidence_minimum: 90
+
+# API Discovery
+api_discovery:
+  openapi_spec_url: ""
+  on_shadow_api_discovered: "log"
+
+# Behavioral Analysis
+behavioral_analysis:
+  enforce_header_consistency: true
+  max_path_entropy: 4.0
+
+# WAF Rules
+sentry_rules:
+  - name: "block_sqli_xss_url"
+    description: "Blocks common malicious patterns in URL query parameters."
+    pattern: '(<script|union select|%3Cscript|eval\(|\s+or\s+\d+=\d+)'
+    inspect_locations: ["query_params"]
+    action: "block"
+  - name: "block_xss_in_body"
+    description: "Blocks script tags in JSON post bodies."
+    pattern: '(<script|%3Cscript)'
+    inspect_locations: ["body"]
+    action: "block"
+
+# PII Data Loss Prevention
+pii_scan_policy:
+  - role: "mobile_app_standard"
+    redact_entities:
+      - "PERSON"
+      - "PHONE_NUMBER"
+      - "US_SSN"
+      - "CREDIT_CARD_NUMBER"
+
+authorization_policies:
+  - name: "mobile_app_standard_policy"
+    match:
+      role: "mobile_app_standard"
+    rules: 
+      - path_pattern: "/api/v1/users/*"
+        enforce_owner: "user_id" 
+    
+aggregations:
+  - public_path: "/mobile/v1/products/{product_id}"
+    required_role: "mobile_guest"
+    queries:
+      - name: "product_info"
+        http_method: "GET"
+        backend_url: "http://localhost:8004/catalog-service/v1/products/{path_params.product_id}"
+      - name: "customer_reviews"
+        http_method: "GET"
+        backend_url: "http://localhost:8005/review-service/v1/products/{path_params.product_id}/reviews?limit=3"
+
+# --- Dummy sections for other modules to prevent startup errors ---
+audit_log_signing_key: "dummy-key-for-local-dev"
+adaptive_security_model:
+  path: "model.onnx"
+  high_risk_threshold: 0.9
+log_shipping:
+  enabled: false
+  endpoint: ""
+  auth_token: ""

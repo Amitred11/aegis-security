@@ -1,0 +1,29 @@
+# requirements.txt
+
+# Core web framework
+fastapi
+uvicorn[standard]
+
+# HTTP client for backend communication
+httpx
+
+# Configuration and data validation
+pydantic-settings
+pyyaml
+
+# Security and authentication
+passlib[bcrypt]
+python-jose[cryptography]
+slowapi
+
+# Caching
+redis
+
+# AI/ML for Oracle Engine
+numpy
+onnxruntime
+
+# PII Scanning for Purifier Engine
+presidio-analyzer
+presidio-anonymizer
+spacy
